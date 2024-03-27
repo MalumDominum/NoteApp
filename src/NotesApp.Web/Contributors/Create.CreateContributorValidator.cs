@@ -1,8 +1,8 @@
-﻿using NotesApp.Infrastructure.Data.Config;
-using FastEndpoints;
+﻿using FastEndpoints;
 using FluentValidation;
+using NotesApp.Infrastructure.Data.Config;
 
-namespace NotesApp.Web.Contributors;
+namespace NotesApp.Presentation.Contributors;
 
 /// <summary>
 /// See: https://fast-endpoints.com/docs/validation

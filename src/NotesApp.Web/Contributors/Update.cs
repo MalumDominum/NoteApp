@@ -1,10 +1,10 @@
 ﻿using Ardalis.Result;
-using NotesApp.UseCases.Contributors.Get;
-using NotesApp.UseCases.Contributors.Update;
 using FastEndpoints;
 using MediatR;
+using NotesApp.Application.Contributors.Get;
+using NotesApp.Application.Contributors.Update;
 
-namespace NotesApp.Web.Contributors;
+namespace NotesApp.Presentation.Contributors;
 
 /// <summary>
 /// Update an existing Contributor.
@@ -26,7 +26,7 @@ public class Update(IMediator _mediator)
     UpdateContributorRequest request,
     CancellationToken cancellationToken)
   {
-    var result = await _mediator.Send(new UpdateContributorCommand(request.Id, request.Name!), cancellationToken);
+    var result = await _mediator.Send(new UpdateNoteCommand(request.Id, request.Name!), cancellationToken);
 
     if (result.Status == ResultStatus.NotFound)
     {
@@ -34,7 +34,7 @@ public class Update(IMediator _mediator)
       return;
     }
 
-    var query = new GetContributorQuery(request.ContributorId);
+    var query = new GetNoteQuery(request.ContributorId);
 
     var queryResult = await _mediator.Send(query, cancellationToken);
 

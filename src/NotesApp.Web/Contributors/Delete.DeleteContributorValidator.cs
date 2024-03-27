@@ -1,7 +1,7 @@
 ﻿using FastEndpoints;
 using FluentValidation;
 
-namespace NotesApp.Web.Contributors;
+namespace NotesApp.Presentation.Contributors;
 
 /// <summary>
 /// See: https://fast-endpoints.com/docs/validation

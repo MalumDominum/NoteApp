@@ -1,4 +1,4 @@
-﻿using NotesApp.Core.ContributorAggregate;
+﻿using NotesApp.Domain.NoteAggregate;
 using Xunit;
 
 namespace NotesApp.IntegrationTests.Data;
@@ -8,18 +8,15 @@ public class EfRepositoryAdd : BaseEfRepoTestFixture
   [Fact]
   public async Task AddsContributorAndSetsId()
   {
-    var testContributorName = "testContributor";
-    var testContributorStatus = ContributorStatus.NotSet;
+    const string testNoteTitle = "test note";
     var repository = GetRepository();
-    var Contributor = new Contributor(testContributorName);
+    var note = new Note(testNoteTitle);
 
-    await repository.AddAsync(Contributor);
+    await repository.AddAsync(note);
 
-    var newContributor = (await repository.ListAsync())
-                    .FirstOrDefault();
+    var newNote = (await repository.ListAsync()).FirstOrDefault();
 
-    Assert.Equal(testContributorName, newContributor?.Name);
-    Assert.Equal(testContributorStatus, newContributor?.Status);
-    Assert.True(newContributor?.Id > 0);
+    Assert.Equal(testNoteTitle, newNote?.Title);
+    Assert.True(newNote?.Id > 0);
   }
 }

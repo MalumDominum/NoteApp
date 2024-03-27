@@ -1,22 +1,19 @@
-﻿using Ardalis.SharedKernel;
-using NotesApp.Core.ContributorAggregate;
-using NotesApp.Infrastructure.Data;
+﻿using NotesApp.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using NSubstitute;
+using NotesApp.Domain.NoteAggregate;
 
 namespace NotesApp.IntegrationTests.Data;
 
 public abstract class BaseEfRepoTestFixture
 {
-  protected AppDbContext _dbContext;
+  protected AppDbContext DbContext;
 
   protected BaseEfRepoTestFixture()
   {
     var options = CreateNewContextOptions();
-    var _fakeEventDispatcher = Substitute.For<IDomainEventDispatcher>();
 
-    _dbContext = new AppDbContext(options, _fakeEventDispatcher);
+    DbContext = new AppDbContext(options);
   }
 
   protected static DbContextOptions<AppDbContext> CreateNewContextOptions()
@@ -36,8 +33,8 @@ public abstract class BaseEfRepoTestFixture
     return builder.Options;
   }
 
-  protected EfRepository<Contributor> GetRepository()
+  protected EfRepository<Note> GetRepository()
   {
-    return new EfRepository<Contributor>(_dbContext);
+    return new EfRepository<Note>(DbContext);
   }
 }

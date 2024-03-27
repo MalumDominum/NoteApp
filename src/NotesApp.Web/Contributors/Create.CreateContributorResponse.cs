@@ -1,4 +1,4 @@
-﻿namespace NotesApp.Web.Contributors;
+﻿namespace NotesApp.Presentation.Contributors;
 
 public class CreateContributorResponse(int id, string name)
 {

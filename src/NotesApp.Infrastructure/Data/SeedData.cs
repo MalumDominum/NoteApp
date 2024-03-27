@@ -1,34 +1,27 @@
-﻿using NotesApp.Core.ContributorAggregate;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using NotesApp.Domain.NoteAggregate;
 
 namespace NotesApp.Infrastructure.Data;
 
 public static class SeedData
 {
-  public static readonly Contributor Contributor1 = new("Ardalis");
-  public static readonly Contributor Contributor2 = new("Snowfrog");
+  public static readonly Note Note1 = new("Shopping list", 
+    "1.Eggs\r\n2.Bread\r\n3.Milk\r\n4.Apples\r\n5.Chicken breasts" +
+    "\r\n6. Spinach\r\n7. Pasta\r\n8. Tomatoes");
+  public static readonly Note Note2 = new("Plans for tomorrow");
 
   public static void Initialize(IServiceProvider serviceProvider)
   {
-    using (var dbContext = new AppDbContext(
-        serviceProvider.GetRequiredService<DbContextOptions<AppDbContext>>(), null))
-    {
-      if (dbContext.Contributors.Any()) return;   // DB has been seeded
-
-      PopulateTestData(dbContext);
-    }
+    using var dbContext = new AppDbContext(serviceProvider.GetRequiredService<DbContextOptions<AppDbContext>>());
+    
+    if (dbContext.Notes.Any()) return;
+    PopulateTestData(dbContext);
   }
   public static void PopulateTestData(AppDbContext dbContext)
   {
-    foreach (var contributor in dbContext.Contributors)
-    {
-      dbContext.Remove(contributor);
-    }
-    dbContext.SaveChanges();
-
-    dbContext.Contributors.Add(Contributor1);
-    dbContext.Contributors.Add(Contributor2);
+    dbContext.Notes.Add(Note1);
+    dbContext.Notes.Add(Note2);
 
     dbContext.SaveChanges();
   }

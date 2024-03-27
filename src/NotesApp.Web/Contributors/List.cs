@@ -1,10 +1,10 @@
 ﻿using Ardalis.Result;
-using NotesApp.UseCases.Contributors;
-using NotesApp.UseCases.Contributors.List;
 using FastEndpoints;
 using MediatR;
+using NotesApp.Application.Contributors;
+using NotesApp.Application.Contributors.List;
 
-namespace NotesApp.Web.Contributors;
+namespace NotesApp.Presentation.Contributors;
 
 /// <summary>
 /// List all Contributors
@@ -22,7 +22,7 @@ public class List(IMediator _mediator) : EndpointWithoutRequest<ContributorListR
 
   public override async Task HandleAsync(CancellationToken cancellationToken)
   {
-    Result<IEnumerable<ContributorDTO>> result = await _mediator.Send(new ListContributorsQuery(null, null), cancellationToken);
+    Result<IEnumerable<NoteDTO>> result = await _mediator.Send(new SearchNoteQuery(null, null), cancellationToken);
 
     if (result.IsSuccess)
     {

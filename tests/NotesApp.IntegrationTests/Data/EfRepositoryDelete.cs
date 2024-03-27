@@ -1,4 +1,4 @@
-﻿using NotesApp.Core.ContributorAggregate;
+﻿using NotesApp.Domain.NoteAggregate;
 using Xunit;
 
 namespace NotesApp.IntegrationTests.Data;
@@ -8,17 +8,17 @@ public class EfRepositoryDelete : BaseEfRepoTestFixture
   [Fact]
   public async Task DeletesItemAfterAddingIt()
   {
-    // add a Contributor
+    // add a note
     var repository = GetRepository();
-    var initialName = Guid.NewGuid().ToString();
-    var Contributor = new Contributor(initialName);
-    await repository.AddAsync(Contributor);
+    var initialTitle = Guid.NewGuid().ToString();
+    var note = new Note(initialTitle);
+    await repository.AddAsync(note);
 
     // delete the item
-    await repository.DeleteAsync(Contributor);
+    await repository.DeleteAsync(note);
 
     // verify it's no longer there
-    Assert.DoesNotContain(await repository.ListAsync(),
-        Contributor => Contributor.Name == initialName);
+    Assert.DoesNotContain(await repository.ListAsync(), 
+      n => n.Title == initialTitle);
   }
 }

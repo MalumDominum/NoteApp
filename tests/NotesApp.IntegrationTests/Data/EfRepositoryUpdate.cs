@@ -1,5 +1,5 @@
-﻿using NotesApp.Core.ContributorAggregate;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using NotesApp.Domain.NoteAggregate;
 using Xunit;
 
 namespace NotesApp.IntegrationTests.Data;
@@ -9,38 +9,38 @@ public class EfRepositoryUpdate : BaseEfRepoTestFixture
   [Fact]
   public async Task UpdatesItemAfterAddingIt()
   {
-    // add a Contributor
+    // add a note
     var repository = GetRepository();
-    var initialName = Guid.NewGuid().ToString();
-    var Contributor = new Contributor(initialName);
+    var initialTitle = Guid.NewGuid().ToString();
+    var note = new Note(initialTitle);
 
-    await repository.AddAsync(Contributor);
+    await repository.AddAsync(note);
 
     // detach the item so we get a different instance
-    _dbContext.Entry(Contributor).State = EntityState.Detached;
+    DbContext.Entry(note).State = EntityState.Detached;
 
     // fetch the item and update its title
     var newContributor = (await repository.ListAsync())
-        .FirstOrDefault(Contributor => Contributor.Name == initialName);
+        .FirstOrDefault(n => n.Title == initialTitle);
     if (newContributor == null)
     {
       Assert.NotNull(newContributor);
       return;
     }
-    Assert.NotSame(Contributor, newContributor);
-    var newName = Guid.NewGuid().ToString();
-    newContributor.UpdateName(newName);
+    Assert.NotSame(note, newContributor);
+    var newTitle = Guid.NewGuid().ToString();
+    newContributor.UpdateTitle(newTitle);
 
     // Update the item
     await repository.UpdateAsync(newContributor);
 
     // Fetch the updated item
     var updatedItem = (await repository.ListAsync())
-        .FirstOrDefault(Contributor => Contributor.Name == newName);
+        .FirstOrDefault(n => n.Title == newTitle);
 
     Assert.NotNull(updatedItem);
-    Assert.NotEqual(Contributor.Name, updatedItem?.Name);
-    Assert.Equal(Contributor.Status, updatedItem?.Status);
+    Assert.NotEqual(note.Title, updatedItem?.Title);
+    Assert.Equal(note.Content, updatedItem?.Content);
     Assert.Equal(newContributor.Id, updatedItem?.Id);
   }
 }

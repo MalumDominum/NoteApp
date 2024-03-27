@@ -1,15 +1,16 @@
 ﻿using System.Reflection;
 using Ardalis.ListStartupServices;
 using Ardalis.SharedKernel;
-using NotesApp.Core.ContributorAggregate;
-using NotesApp.Core.Interfaces;
-using NotesApp.Infrastructure;
-using NotesApp.Infrastructure.Data;
-using NotesApp.Infrastructure.Email;
-using NotesApp.UseCases.Contributors.Create;
 using FastEndpoints;
 using FastEndpoints.Swagger;
 using MediatR;
+using NotesApp.Application.Notes.Commands.Create;
+using NotesApp.Domain.ContributorAggregate;
+using NotesApp.Domain.Interfaces;
+using NotesApp.Domain.NoteAggregate;
+using NotesApp.Infrastructure;
+using NotesApp.Infrastructure.Data;
+using NotesApp.Infrastructure.Email;
 using Serilog;
 using Serilog.Extensions.Logging;
 
@@ -24,7 +25,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseSerilog((_, config) => config.ReadFrom.Configuration(builder.Configuration));
 var microsoftLogger = new SerilogLoggerFactory(logger)
-    .CreateLogger<Program>();
+    .CreateLogger<NotesApp.Presentation.Program>();
 
 // Configure Web Behavior
 builder.Services.Configure<CookiePolicyOptions>(options =>
@@ -94,7 +95,7 @@ static void SeedDatabase(WebApplication app)
   }
   catch (Exception ex)
   {
-    var logger = services.GetRequiredService<ILogger<Program>>();
+    var logger = services.GetRequiredService<ILogger<NotesApp.Presentation.Program>>();
     logger.LogError(ex, "An error occurred seeding the DB. {exceptionMessage}", ex.Message);
   }
 }
@@ -103,8 +104,8 @@ void ConfigureMediatR()
 {
   var mediatRAssemblies = new[]
 {
-  Assembly.GetAssembly(typeof(Contributor)), // Core
-  Assembly.GetAssembly(typeof(CreateContributorCommand)) // UseCases
+  Assembly.GetAssembly(typeof(Note)), // Core
+  Assembly.GetAssembly(typeof(CreateNoteCommand)) // UseCases
 };
   builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(mediatRAssemblies!));
   builder.Services.AddScoped(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
@@ -124,6 +125,9 @@ void AddShowAllServicesSupport()
 }
 
 // Make the implicit Program.cs class public, so integration tests can reference the correct assembly for host building
-public partial class Program
+namespace NotesApp.Presentation
 {
+  public partial class Program
+  {
+  }
 }

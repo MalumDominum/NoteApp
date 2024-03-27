@@ -1,8 +1,8 @@
-﻿using NotesApp.UseCases.Contributors.Create;
-using FastEndpoints;
+﻿using FastEndpoints;
 using MediatR;
+using NotesApp.Application.Contributors.Create;
 
-namespace NotesApp.Web.Contributors;
+namespace NotesApp.Presentation.Contributors;
 
 /// <summary>
 /// Create a new Contributor
@@ -30,7 +30,7 @@ public class Create(IMediator _mediator)
     CreateContributorRequest request,
     CancellationToken cancellationToken)
   {
-    var result = await _mediator.Send(new CreateContributorCommand(request.Name!,
+    var result = await _mediator.Send(new CreateNoteCommand(request.Name!,
       request.PhoneNumber), cancellationToken);
 
     if (result.IsSuccess)

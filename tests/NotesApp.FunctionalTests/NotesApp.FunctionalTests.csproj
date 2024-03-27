@@ -20,8 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\NotesApp.Infrastructure\NotesApp.Infrastructure.csproj" />
-    <ProjectReference Include="..\..\src\NotesApp.UseCases\NotesApp.UseCases.csproj" />
-    <ProjectReference Include="..\..\src\NotesApp.Web\NotesApp.Web.csproj" />
+    <ProjectReference Include="..\..\src\NotesApp.Application\NotesApp.Application.csproj" />
   </ItemGroup>
 
 </Project>

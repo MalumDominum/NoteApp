@@ -1,9 +1,9 @@
 ﻿using Ardalis.Result;
-using NotesApp.UseCases.Contributors.Delete;
 using FastEndpoints;
 using MediatR;
+using NotesApp.Application.Contributors.Delete;
 
-namespace NotesApp.Web.Contributors;
+namespace NotesApp.Presentation.Contributors;
 
 /// <summary>
 /// Delete a Contributor.
@@ -24,7 +24,7 @@ public class Delete(IMediator _mediator)
     DeleteContributorRequest request,
     CancellationToken cancellationToken)
   {
-    var command = new DeleteContributorCommand(request.ContributorId);
+    var command = new DeleteNoteCommand(request.ContributorId);
 
     var result = await _mediator.Send(command, cancellationToken);
 

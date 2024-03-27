@@ -1,9 +1,9 @@
 ﻿using Ardalis.Result;
-using NotesApp.UseCases.Contributors.Get;
 using FastEndpoints;
 using MediatR;
+using NotesApp.Application.Contributors.Get;
 
-namespace NotesApp.Web.Contributors;
+namespace NotesApp.Presentation.Contributors;
 
 /// <summary>
 /// Get a Contributor by integer ID.
@@ -23,7 +23,7 @@ public class GetById(IMediator _mediator)
   public override async Task HandleAsync(GetContributorByIdRequest request,
     CancellationToken cancellationToken)
   {
-    var command = new GetContributorQuery(request.ContributorId);
+    var command = new GetNoteQuery(request.ContributorId);
 
     var result = await _mediator.Send(command, cancellationToken);
 
