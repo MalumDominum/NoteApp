@@ -14,10 +14,11 @@ public static class SeedData
   public static void Initialize(IServiceProvider serviceProvider)
   {
     using var dbContext = new AppDbContext(serviceProvider.GetRequiredService<DbContextOptions<AppDbContext>>());
-    
+
     if (dbContext.Notes.Any()) return;
     PopulateTestData(dbContext);
   }
+  
   public static void PopulateTestData(AppDbContext dbContext)
   {
     dbContext.Notes.Add(Note1);

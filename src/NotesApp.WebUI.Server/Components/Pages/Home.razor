@@ -1,7 +1,32 @@
 ﻿@page "/"
+@using NotesApp.Application.Notes.Queries.Search
+@rendermode InteractiveServer
+@attribute [StreamRendering]
 
-<PageTitle>Home</PageTitle>
+@inject ISender Mediator
 
-<h1>Hello, world!</h1>
+<PageTitle>Notes Page</PageTitle>
 
-Welcome to your new app.
+<h1>Notes Page</h1>
+
+<p>This component demonstrates showing data.</p>
+
+@foreach (var note in Notes)
+{
+    <hi>@note.Title</hi>
+    <p>@note.Content</p>
+                    <br/>
+}
+
+@code
+{
+    protected List<NoteDTO> Notes = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await Mediator.Send(new SearchNoteQuery());
+
+        if (result.IsSuccess)
+            Notes = result.Value.ToList();
+    }
+}
