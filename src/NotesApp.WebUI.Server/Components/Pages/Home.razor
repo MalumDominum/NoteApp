@@ -1,7 +1,7 @@
 ﻿@page "/"
 @using NotesApp.Application.Notes.Queries.Search
+@using NotesApp.Application.Notes.Commands.Delete
 @rendermode InteractiveServer
-@attribute [StreamRendering]
 
 @inject ISender Mediator
 
@@ -11,16 +11,28 @@
 
 <p>This component demonstrates showing data.</p>
 
-@foreach (var note in Notes)
+@if (Notes == null)
 {
-    <hi>@note.Title</hi>
-    <p>@note.Content</p>
-                    <br/>
+    <p><em>Loading...</em></p>
+}
+else if (Notes.Count == 0)
+{
+    <p>There is no created notes yet</p>
+}
+else
+{
+    foreach (var note in Notes)
+    {
+        <hi>@note.Title</hi>
+        <p>@note.Content</p>
+        <button @onclick="() => DeleteNote(note.NoteId)">Delete</button>
+        <br/>
+    }
 }
 
 @code
 {
-    protected List<NoteDTO> Notes = new();
+    protected List<NoteDTO>? Notes;
 
     protected override async Task OnInitializedAsync()
     {
@@ -28,5 +40,12 @@
 
         if (result.IsSuccess)
             Notes = result.Value.ToList();
+    }
+
+    private async Task DeleteNote(int noteId)
+    {
+        var result = await Mediator.Send(new DeleteNoteCommand(noteId));
+
+        if (result.IsSuccess) await OnInitializedAsync();
     }
 }
