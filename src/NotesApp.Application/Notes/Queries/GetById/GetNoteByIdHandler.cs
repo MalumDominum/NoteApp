@@ -2,7 +2,7 @@
 using Ardalis.SharedKernel;
 using NotesApp.Domain.NoteAggregate;
 
-namespace NotesApp.Application.Notes.Queries.ById;
+namespace NotesApp.Application.Notes.Queries.GetById;
 
 public class GetNoteByIdHandler : IQueryHandler<GetNoteByIdQuery, Result<NoteDTO>>
 {

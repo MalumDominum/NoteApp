@@ -1,17 +1,31 @@
 ﻿@page "/"
 @rendermode InteractiveServer
 
-@inject ISender Mediator
+<PageTitle>Notes List</PageTitle>
 
-<PageTitle>Notes Page</PageTitle>
+@code
+{
+    protected override async Task OnInitializedAsync()
+    {
+        SearchValue = NavigationManager.GetParameterFromUrl("searchValue");
+        await LoadNotes();
+    }
+}
 
 <h1>Notes Page</h1>
 
-<p>This component demonstrates showing data.</p>
+<form id="searchForm" method="GET">
+    <input type="text" id="searchInput" name="searchValue">
+    <button type="submit">Search</button>
+</form>
 
 @if (Notes == null)
 {
     <p><em>Loading...</em></p>
+}
+else if (Notes.Count == 0 && !string.IsNullOrEmpty(SearchValue))
+{
+    <p>No notes found for this search term</p>
 }
 else if (Notes.Count == 0)
 {
@@ -21,87 +35,23 @@ else
 {
     foreach (var note in Notes)
     {
-        <EditForm Model="note" OnSubmit="() => UpdateNote(note)" FormName="@($"Note{note.Id}")">
+        <EditForm Model="note" OnSubmit="() => UpdateNote(note)" FormName="@(nameof(note) + note.Id)">
             <div>
-                <label>
-                    Title:
-                    <InputText @bind-Value="note.Title" />
-                </label>
-                <label>
-                    Content:
-                    <InputText @bind-Value="note.Content" />
-                </label>
+                <label>Title:</label>
+                <InputText @bind-Value="note.Title" />
+
+                <label>Content:</label>
+                <InputText @bind-Value="note.Content" />
             </div>
-            <div><p>Created @FormatTime(note.CreatedAt)</p></div>
+            <div><p>Created @note.CreatedAt.FormatDifferenceFromNow()</p></div>
             @if (note.UpdatedAt != null)
             {
-                <p>Updated @FormatTime(note.UpdatedAt.Value)</p>
+                <p>Updated @note.UpdatedAt.Value.FormatDifferenceFromNow()</p>
             }
             <button type="button" @onclick="() => RefreshNote(note)">Refresh</button>
             <button type="submit">Save</button>
+            <button type="button" @onclick="() => DeleteNote(note.Id)">Delete</button>
         </EditForm>
-        <button @onclick="() => DeleteNote(note.Id)">Delete</button>
         <br/>
-    }
-}
-
-@code
-{
-    protected List<NoteDTO>? Notes;
-
-    protected override async Task OnInitializedAsync()
-    {
-        var result = await Mediator.Send(new SearchNoteQuery());
-
-        if (result.IsSuccess)
-            Notes = result.Value.ToList();
-    }
-
-    private async Task RefreshNote(NoteDTO note)
-    {
-        var result = await Mediator.Send(new GetNoteByIdQuery(note.Id));
-
-        if (result.IsSuccess)
-        {
-            note.Title = result.Value.Title;
-            note.Content = result.Value.Content;
-            note.CreatedAt = result.Value.CreatedAt;
-            note.UpdatedAt = result.Value.UpdatedAt;
-        }
-    }
-
-    private async Task UpdateNote(NoteDTO note)
-    {
-        var result = await Mediator.Send(new UpdateNoteCommand(note.Id, note.Title, note.Content));
-
-        if (result.IsSuccess) await OnInitializedAsync();
-    }
-
-    private async Task DeleteNote(int noteId)
-    {
-        var result = await Mediator.Send(new DeleteNoteCommand(noteId));
-
-        if (result.IsSuccess) await OnInitializedAsync();
-    }
-
-    private static string FormatTime(DateTime dateTime)
-    {
-        var timeDifference = DateTime.Now - dateTime;
-
-        if (timeDifference.TotalMinutes < 1)
-        {
-            return "less than a minute ago";
-        }
-        if (timeDifference.TotalMinutes < 60)
-        {
-            var minutes = (int)timeDifference.TotalMinutes;
-            return $"{minutes} minute{(minutes > 1 ? "s" : "")} ago";
-        }
-        if (timeDifference.TotalHours < 24)
-        {
-            var hours = (int)timeDifference.TotalHours;
-            return $"{hours} hour{(hours > 1 ? "s" : "")} ago";
-        }
-        return dateTime.ToString("MM.dd HH:mm");
     }
 }
