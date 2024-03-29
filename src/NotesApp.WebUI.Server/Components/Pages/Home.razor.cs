@@ -2,6 +2,7 @@
 using NotesApp.Application.Notes.Commands.Update;
 using NotesApp.Application.Notes.Queries.GetById;
 using NotesApp.Application.Notes.Queries.Search;
+using NotesApp.Application.Notes.Commands.Create;
 using NotesApp.Application.Notes;
 using MediatR;
 using Microsoft.AspNetCore.Components;
@@ -24,6 +25,13 @@ public partial class Home
     var result = await Mediator.Send(new SearchNoteQuery(SearchValue));
 
     if (result.IsSuccess) Notes = result.Value.ToList();
+  }
+  
+  private async Task CreateNote()
+  {
+    var result = await Mediator.Send(new CreateNoteCommand("New Note"));
+
+    if (result.IsSuccess) await OnInitializedAsync();
   }
 
   private async Task RefreshNote(NoteDTO note)

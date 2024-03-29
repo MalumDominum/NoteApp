@@ -32,6 +32,9 @@ public class Note : EntityBase, IAggregateRoot
     UpdatedAt = DateTime.Now;
   }
 
-  public void UpdateTitle(string newTitle) => 
+  public void UpdateTitle(string newTitle)
+  {
     Title = Guard.Against.NullOrEmpty(newTitle, nameof(newTitle));
+    UpdatedAt = DateTime.Now;
+  }
 }

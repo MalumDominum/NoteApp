@@ -7,7 +7,7 @@ namespace NotesApp.Infrastructure.Data;
 public static class SeedData
 {
   public static readonly Note Note1 = new("Shopping list", 
-    "1.Eggs\r\n2.Bread\r\n3.Milk\r\n4.Apples\r\n5.Chicken breasts" +
+    "1. Eggs\r\n2. Bread\r\n3. Milk\r\n4. Apples\r\n5. Chicken breasts" +
     "\r\n6. Spinach\r\n7. Pasta\r\n8. Tomatoes");
   public static readonly Note Note2 = new("Plans for tomorrow");
 

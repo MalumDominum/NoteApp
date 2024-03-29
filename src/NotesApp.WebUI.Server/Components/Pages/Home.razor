@@ -19,6 +19,8 @@
     <button type="submit">Search</button>
 </form>
 
+<button @onclick="CreateNote">+</button>
+
 @if (Notes == null)
 {
     <p><em>Loading...</em></p>
@@ -41,16 +43,20 @@ else
                 <InputText @bind-Value="note.Title" />
 
                 <label>Content:</label>
-                <InputText @bind-Value="note.Content" />
+                <InputTextArea @bind-Value="note.Content" style="resize: none"/>
             </div>
-            <div><p>Created @note.CreatedAt.FormatDifferenceFromNow()</p></div>
-            @if (note.UpdatedAt != null)
-            {
-                <p>Updated @note.UpdatedAt.Value.FormatDifferenceFromNow()</p>
-            }
-            <button type="button" @onclick="() => RefreshNote(note)">Refresh</button>
-            <button type="submit">Save</button>
-            <button type="button" @onclick="() => DeleteNote(note.Id)">Delete</button>
+            <div>
+                <p>Created @note.CreatedAt.FormatDifferenceFromNow()</p>
+                @if (note.UpdatedAt != null)
+                {
+                    <p>Updated @note.UpdatedAt.Value.FormatDifferenceFromNow()</p>
+                }
+            </div>
+            <div>
+                <button type="button" @onclick="() => RefreshNote(note)">Refresh</button>
+                <button type="submit">Save</button>
+                <button type="button" @onclick="() => DeleteNote(note.Id)">Delete</button>
+            </div>
         </EditForm>
         <br/>
     }
