@@ -1,6 +1,4 @@
 ﻿@page "/"
-@using NotesApp.Application.Notes.Queries.Search
-@using NotesApp.Application.Notes.Commands.Delete
 @rendermode InteractiveServer
 
 @inject ISender Mediator
@@ -23,9 +21,26 @@ else
 {
     foreach (var note in Notes)
     {
-        <hi>@note.Title</hi>
-        <p>@note.Content</p>
-        <button @onclick="() => DeleteNote(note.NoteId)">Delete</button>
+        <EditForm Model="note" OnSubmit="() => UpdateNote(note)" FormName="@($"Note{note.Id}")">
+            <div>
+                <label>
+                    Title:
+                    <InputText @bind-Value="note.Title" />
+                </label>
+                <label>
+                    Content:
+                    <InputText @bind-Value="note.Content" />
+                </label>
+            </div>
+            <div><p>Created @FormatTime(note.CreatedAt)</p></div>
+            @if (note.UpdatedAt != null)
+            {
+                <p>Updated @FormatTime(note.UpdatedAt.Value)</p>
+            }
+            <button type="button" @onclick="() => RefreshNote(note)">Refresh</button>
+            <button type="submit">Save</button>
+        </EditForm>
+        <button @onclick="() => DeleteNote(note.Id)">Delete</button>
         <br/>
     }
 }
@@ -42,10 +57,51 @@ else
             Notes = result.Value.ToList();
     }
 
+    private async Task RefreshNote(NoteDTO note)
+    {
+        var result = await Mediator.Send(new GetNoteByIdQuery(note.Id));
+
+        if (result.IsSuccess)
+        {
+            note.Title = result.Value.Title;
+            note.Content = result.Value.Content;
+            note.CreatedAt = result.Value.CreatedAt;
+            note.UpdatedAt = result.Value.UpdatedAt;
+        }
+    }
+
+    private async Task UpdateNote(NoteDTO note)
+    {
+        var result = await Mediator.Send(new UpdateNoteCommand(note.Id, note.Title, note.Content));
+
+        if (result.IsSuccess) await OnInitializedAsync();
+    }
+
     private async Task DeleteNote(int noteId)
     {
         var result = await Mediator.Send(new DeleteNoteCommand(noteId));
 
         if (result.IsSuccess) await OnInitializedAsync();
+    }
+
+    private static string FormatTime(DateTime dateTime)
+    {
+        var timeDifference = DateTime.Now - dateTime;
+
+        if (timeDifference.TotalMinutes < 1)
+        {
+            return "less than a minute ago";
+        }
+        if (timeDifference.TotalMinutes < 60)
+        {
+            var minutes = (int)timeDifference.TotalMinutes;
+            return $"{minutes} minute{(minutes > 1 ? "s" : "")} ago";
+        }
+        if (timeDifference.TotalHours < 24)
+        {
+            var hours = (int)timeDifference.TotalHours;
+            return $"{hours} hour{(hours > 1 ? "s" : "")} ago";
+        }
+        return dateTime.ToString("MM.dd HH:mm");
     }
 }

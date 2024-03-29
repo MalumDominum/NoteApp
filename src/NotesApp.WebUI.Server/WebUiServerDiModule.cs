@@ -24,7 +24,7 @@ public static class WebUiServerDiModule
       var context = services.GetRequiredService<AppDbContext>();
       // Manage Database
       //context.Database.Migrate();
-      //context.Database.EnsureDeleted();
+      context.Database.EnsureDeleted();
       context.Database.EnsureCreated();
 
       SeedData.Initialize(services);

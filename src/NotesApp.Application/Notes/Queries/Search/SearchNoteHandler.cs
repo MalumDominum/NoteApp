@@ -13,9 +13,7 @@ public class SearchNoteHandler : IQueryHandler<SearchNoteQuery, Result<IEnumerab
 
   public async Task<Result<IEnumerable<NoteDTO>>> Handle(SearchNoteQuery query, CancellationToken cancellationToken)
   {
-    var notes = query.SearchValue == null
-      ? await _repository.ListAsync(cancellationToken)
-      : await _repository.ListAsync(new NoteSearchSpec(query.SearchValue), cancellationToken);
+    var notes = await _repository.ListAsync(new NoteSearchSpec(query.SearchValue), cancellationToken);
 
     var noteDTOs = notes.Select(note => new NoteDTO(note.Id, note.Title, note.Content, note.CreatedAt, note.UpdatedAt));
 
