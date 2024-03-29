@@ -21,9 +21,9 @@ public partial class Home
   [Inject]
   protected IMediator Mediator { get; set; } = null!;
 
-  private async Task LoadNotes()
+  private async Task LoadNotes(string? searchValue = null)
   {
-    var result = await Mediator.Send(new SearchNoteQuery(SearchValue));
+    var result = await Mediator.Send(new SearchNoteQuery(searchValue ?? SearchValue));
 
     if (result.IsSuccess) Notes = result.Value.ToList();
   }
@@ -32,9 +32,11 @@ public partial class Home
 
   private async Task CreateNote()
   {
+    NavigationManager.NavigateTo("/");
     var result = await Mediator.Send(new CreateNoteCommand("New Note"));
 
-    if (result.IsSuccess) await OnInitializedAsync();
+    if (result.IsSuccess)
+      await OnInitializedAsync();
   }
 
   private async Task RefreshNote(NoteDTO note)

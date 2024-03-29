@@ -13,58 +13,74 @@
     }
 }
 
-<h1>Notes Page</h1>
-
-@if (Notes != null && !string.IsNullOrEmpty(SearchValue))
-{
-    <h4>Founded notes: @Notes.Count</h4>
-}
-<h4>Total notes: @TotalNotesCount</h4>
-
-<form id="searchForm" method="GET">
-    <input type="text" id="searchInput" name="searchValue">
-    <button type="submit">Search</button>
-</form>
-
-<button @onclick="CreateNote">+</button>
-
-@if (Notes == null)
-{
-    <p><em>Loading...</em></p>
-}
-else if (Notes.Count == 0 && !string.IsNullOrEmpty(SearchValue))
-{
-    <p>No notes found for this search term</p>
-}
-else if (Notes.Count == 0)
-{
-    <p>There is no created notes yet</p>
-}
-else
-{
-    foreach (var note in Notes)
+<nav class="header">
+    <a @onclick="@(() => LoadNotes(""))" href="/">
+        <img class="logo" src="assets/logo.svg" alt="logo" />
+    </a>
+    <form id="searchForm" class="container" method="GET">
+        <input placeholder="Search..." class="search-input" type="search" id="searchInput" name="searchValue">
+        <button type="submit"><img src="assets/search.svg" alt="Search button"/></button>
+    </form>
+    <div class="notes-count">
+    @if (Notes != null && !string.IsNullOrEmpty(SearchValue))
     {
-        <EditForm Model="note" OnSubmit="() => UpdateNote(note)" FormName="@(nameof(note) + note.Id)">
-            <div>
-                <label>Title:</label>
-                <InputText @bind-Value="note.Title" />
-
-                <label>Content:</label>
-                <InputTextArea @bind-Value="note.Content" style="resize: none"/>
-            </div>
-            <div>
-                <p>Created @note.CreatedAt.FormatDifferenceFromNow()</p>
-                @if (note.UpdatedAt != null)
-                {
-                    <p>Updated @note.UpdatedAt.Value.FormatDifferenceFromNow()</p>
-                }
-            </div>
-            <div>
-                <button type="button" @onclick="() => RefreshNote(note)">Refresh</button>
-                <button type="submit">Save</button>
-                <button type="button" @onclick="() => DeleteNote(note.Id)">Delete</button>
-            </div>
-        </EditForm>
-        <br/>
+        <div>Founded notes: @Notes.Count</div>
     }
-}
+        <div>Total notes: @TotalNotesCount</div>
+    </div>
+</nav>
+
+<div class="page-content">
+    <button @onclick="CreateNote" class="create-note-btn">
+        <img src="assets/add.svg" alt="+"/>
+    </button>
+
+    @if (Notes == null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else if (Notes.Count == 0 && !string.IsNullOrEmpty(SearchValue))
+    {
+        <p>No notes found for this search term</p>
+    }
+    else if (Notes.Count == 0)
+    {
+        <p>There is no created notes yet</p>
+    }
+    else
+    {
+        foreach (var note in Notes)
+        {
+            <EditForm Model="note" OnSubmit="() => UpdateNote(note)" FormName="@(nameof(note) + note.Id)" class="form-container">
+                <div class="form-content-container">
+                    <div class="inputs-container">
+                        <div class="input-container">
+                            <label>Title</label>
+                            <InputText @bind-Value="note.Title" type="text" />
+                        </div>
+                    </div>
+                    <div class="time-diff">
+                        <p>Created @note.CreatedAt.FormatDifferenceFromNow()</p>
+                        @if (note.UpdatedAt != null)
+                        {
+                            <p>Updated @note.UpdatedAt.Value.FormatDifferenceFromNow()</p>
+                        }
+                    </div>
+                    <div>
+                        <button type="button" @onclick="() => RefreshNote(note)">
+                            <img src="assets/refresh.svg" alt="Refresh note"/>
+                        </button>
+                        <button type="submit">
+                            <img src="assets/save.svg" alt="Save note"/>
+                        </button>
+                        <button type="button" @onclick="() => DeleteNote(note.Id)">
+                            <img src="assets/delete.svg" alt="Delete note"/>
+                        </button>
+                    </div>
+                </div>
+                <InputTextArea @bind-Value="note.Content" style="resize: none"/>
+            </EditForm>
+            <br/>
+        }
+    }
+</div>
