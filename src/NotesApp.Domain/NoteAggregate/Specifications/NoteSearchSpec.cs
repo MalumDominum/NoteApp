@@ -5,7 +5,7 @@ namespace NotesApp.Domain.NoteAggregate.Specifications;
 
 public sealed class NoteSearchSpec : Specification<Note>
 {
-  public NoteSearchSpec(string? searchValue)
+  public NoteSearchSpec(string? searchValue = null)
   {
     if (!IsNullOrEmpty(searchValue))
       Query.Where(note => note.Title.ToLower().Contains(searchValue.ToLower()) 

@@ -9,10 +9,17 @@
     {
         SearchValue = NavigationManager.GetParameterFromUrl("searchValue");
         await LoadNotes();
+        TotalNotesCount = await CountNotes();
     }
 }
 
 <h1>Notes Page</h1>
+
+@if (Notes != null && !string.IsNullOrEmpty(SearchValue))
+{
+    <h4>Founded notes: @Notes.Count</h4>
+}
+<h4>Total notes: @TotalNotesCount</h4>
 
 <form id="searchForm" method="GET">
     <input type="text" id="searchInput" name="searchValue">

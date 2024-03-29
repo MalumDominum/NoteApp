@@ -6,17 +6,18 @@ using NotesApp.Application.Notes.Commands.Create;
 using NotesApp.Application.Notes;
 using MediatR;
 using Microsoft.AspNetCore.Components;
+using NotesApp.Application.Notes.Queries.Count;
 
 namespace NotesApp.WebUI.Server.Components.Pages;
 
 public partial class Home
 {
   protected List<NoteDTO>? Notes;
+  protected int TotalNotesCount;
   protected string? SearchValue;
 
   [Inject]
   protected NavigationManager NavigationManager { get; set; } = null!;
-
   [Inject]
   protected IMediator Mediator { get; set; } = null!;
 
@@ -26,7 +27,9 @@ public partial class Home
 
     if (result.IsSuccess) Notes = result.Value.ToList();
   }
-  
+
+  private async Task<int> CountNotes() => (await Mediator.Send(new CountNoteQuery())).Value;
+
   private async Task CreateNote()
   {
     var result = await Mediator.Send(new CreateNoteCommand("New Note"));
