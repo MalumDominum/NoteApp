@@ -8,8 +8,8 @@ public sealed class NoteSearchSpec : Specification<Note>
   public NoteSearchSpec(string? searchValue)
   {
     if (!IsNullOrEmpty(searchValue))
-      Query.Where(note => note.Title.Contains(searchValue) 
-                          || note.Content.Contains(searchValue));
+      Query.Where(note => note.Title.ToLower().Contains(searchValue.ToLower()) 
+                          || note.Content.ToLower().Contains(searchValue.ToLower()));
 
     Query.OrderByDescending(note => note.CreatedAt);
   }
