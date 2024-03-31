@@ -11,6 +11,8 @@
     <br> 
 </p>
 
+<img src="docs/work-showcase.gif" alt="Program work showcase">
+
 ## 🏁 Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
@@ -23,7 +25,7 @@ You need to install PostgreSQL Server locally or use next Docker command to run 
 docker run --name NoteAppDb -p 5432:5432 -e POSTGRES_PASSWORD=yoursecretpassword -d postgres
 ```
 
-### Installing
+### Setup and Run
 
 Go to the WebUI.Server project folder and run user-secrets manager to set your connection string.
 
@@ -71,3 +73,4 @@ Give an example
 
 - [Blazor](https://dotnet.microsoft.com/en-us/apps/aspnet/web-apps/blazor) - Full-stack Web Framework
 - [PostgreSQL](https://www.postgresql.org/) - Database
+- [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html) - Architecture
