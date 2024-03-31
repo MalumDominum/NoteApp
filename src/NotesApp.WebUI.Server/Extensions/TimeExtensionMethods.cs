@@ -20,6 +20,6 @@ public static class TimeExtensionMethods
       var hours = (int)timeDifference.TotalHours;
       return $"{hours} hour{(hours > 1 ? "s" : "")} ago";
     }
-    return dateTime.ToString("MM.dd HH:mm");
+    return dateTime.ToString("dd.MM HH:mm");
   }
 }
